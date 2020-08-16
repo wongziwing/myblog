@@ -17,4 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CommentInfoServiceImpl extends ServiceImpl<CommentInfoMapper, CommentInfo> implements ICommentInfoService {
 
+    @Override
+    public boolean save(CommentInfo entity) {
+        return super.save(entity);
+    }
 }
