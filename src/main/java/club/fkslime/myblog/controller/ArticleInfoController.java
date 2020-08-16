@@ -52,6 +52,20 @@ public class ArticleInfoController {
     }
 
     /**
+     * 通过文章编号查看文章
+     * @param articleId 文章编号
+     * @return 文章
+     */
+    @RequestMapping("/viewArticle")
+    public ResponseEntity<ArticleInfo> selectArticleById(@RequestParam int articleId){
+        ArticleInfo article = articleInfoService.getById(articleId);
+        if (article == null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(article);
+    }
+
+    /**
      * 修改文章
      * @param id 文章标号
      * @param name 文章名称

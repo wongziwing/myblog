@@ -3,8 +3,11 @@ package club.fkslime.myblog.service.impl;
 import club.fkslime.myblog.entity.CommentInfo;
 import club.fkslime.myblog.mapper.CommentInfoMapper;
 import club.fkslime.myblog.service.ICommentInfoService;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,6 +24,4 @@ public class CommentInfoServiceImpl extends ServiceImpl<CommentInfoMapper, Comme
     public boolean save(CommentInfo entity) {
         return super.save(entity);
     }
-
-
 }
