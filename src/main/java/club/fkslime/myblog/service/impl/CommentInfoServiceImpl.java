@@ -21,4 +21,6 @@ public class CommentInfoServiceImpl extends ServiceImpl<CommentInfoMapper, Comme
     public boolean save(CommentInfo entity) {
         return super.save(entity);
     }
+
+
 }

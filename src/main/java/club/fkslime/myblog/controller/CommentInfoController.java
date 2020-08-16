@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -31,7 +32,7 @@ public class CommentInfoController {
 
     /**
      * 添加评论
-     * @param articleId 评论文章的s编号
+     * @param articleId 评论文章的编号
      * @param comment 评论内容
      * @return 添加是否成功
      */
@@ -45,6 +46,19 @@ public class CommentInfoController {
         commentInfo.setArticleId(articleId);
         commentInfo.setCommentContent(comment);
         return ResponseEntity.ok(commentInfoService.save(commentInfo));
+    }
+
+    /**
+     * 查看文章评论
+     * @param articleId 文章编号
+     * @return 文章的评论
+     */
+    @RequestMapping("/view")
+    public ResponseEntity<List<CommentInfo>> selectComment(@RequestParam int articleId){
+        if (articleInfoService.getById(articleId) == null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(commentInfoService.list());
     }
 
 }
