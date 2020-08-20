@@ -30,7 +30,7 @@ public class ResultVOUtil {
 
     public static ResultVO<Object> error(Integer code, String msg){
         ResultVO<Object> resultVO = new ResultVO<>();
-        resultVO.setData(code);
+        resultVO.setCode(code);
         resultVO.setMsg(msg);
         resultVO.setData(null);
         return resultVO;

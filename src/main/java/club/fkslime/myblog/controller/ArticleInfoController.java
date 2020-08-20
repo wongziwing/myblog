@@ -43,7 +43,7 @@ public class ArticleInfoController {
         if (save){
             return ResultVOUtil.success(articleInfo);
         }
-        return ResultVOUtil.error(404, "error");
+        return ResultVOUtil.error(400, "add error");
     }
 
 
@@ -63,8 +63,12 @@ public class ArticleInfoController {
      * @return 文章
      */
     @GetMapping("/viewArticle")
-    public ResponseEntity<ArticleInfo> selectArticleById(@RequestParam int articleId){
-        return ResponseEntity.ok(articleInfoService.getById(articleId));
+    public ResultVO<Object> selectArticleById(@RequestParam int articleId){
+        ArticleInfo articleInfo = articleInfoService.getById(articleId);
+        if (articleInfo == null){
+            return ResultVOUtil.error(400, "view error");
+        }
+        return ResultVOUtil.success(articleInfo);
     }
 
     /**
@@ -76,18 +80,18 @@ public class ArticleInfoController {
      * @return 修改的结果
      */
     @PostMapping("/change")
-    public ResponseEntity<Boolean> changeArticle(@RequestParam int articleId,
-                                                 @RequestParam String name,
-                                                 @RequestParam String content,
-                                                 @RequestParam String tag){
+    public ResultVO<Object> changeArticle(@RequestParam int articleId,
+                                          @RequestParam String name,
+                                          @RequestParam String content,
+                                          @RequestParam String tag){
         ArticleInfo article = articleInfoService.getById(articleId);
         if (article == null){
-            return ResponseEntity.badRequest().build();
+            return ResultVOUtil.error(400, "change error");
         }
         article.setArticleName(name);
         article.setArticleContent(content);
         article.setArticleTag(tag);
-        return ResponseEntity.ok(articleInfoService.updateById(article));
+        return ResultVOUtil.success(article);
     }
 
     /**
@@ -96,8 +100,12 @@ public class ArticleInfoController {
      * @return 删除结果
      */
     @PostMapping("/del")
-    public ResponseEntity<Boolean> removeArticle(@RequestParam int articleId){
-        return ResponseEntity.ok(articleInfoService.removeById(articleId));
+    public ResultVO<Object> removeArticle(@RequestParam int articleId){
+        boolean result = articleInfoService.removeById(articleId);
+        if (result){
+            return ResultVOUtil.success();
+        }
+        return ResultVOUtil.error(400, "del error");
     }
 }
 
