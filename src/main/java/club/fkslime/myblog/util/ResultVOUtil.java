@@ -21,13 +21,19 @@ public class ResultVOUtil {
     }
 
     /**
-     * 返回没有i数据的成功信息
+     * 返回没有数据的成功信息
      * @return ResultVo
      */
     public static ResultVO<Object> success(){
         return success(null);
     }
 
+    /**
+     *
+     * @param code 错误代码
+     * @param msg、错误信息
+     * @return ResultVO
+     */
     public static ResultVO<Object> error(Integer code, String msg){
         ResultVO<Object> resultVO = new ResultVO<>();
         resultVO.setCode(code);
