@@ -4,12 +4,14 @@ package club.fkslime.myblog.controller;
 import club.fkslime.myblog.entity.CommentInfo;
 import club.fkslime.myblog.service.IArticleInfoService;
 import club.fkslime.myblog.service.ICommentInfoService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,7 +60,9 @@ public class CommentInfoController {
         if (articleInfoService.getById(articleId) == null){
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(commentInfoService.list());
+        QueryWrapper<CommentInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("article_id", articleId);
+        return ResponseEntity.ok(commentInfoService.list(queryWrapper));
     }
 
 }

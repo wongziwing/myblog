@@ -38,4 +38,9 @@ class ArticleInfoMapperTest {
                 .andReturn();
     }
 
+    @Test
+    void demo(){
+
+    }
+
 }

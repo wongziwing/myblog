@@ -1,8 +1,9 @@
 package club.fkslime.myblog.controller;
 
-
 import club.fkslime.myblog.entity.ArticleInfo;
 import club.fkslime.myblog.service.IArticleInfoService;
+import club.fkslime.myblog.util.ResultVOUtil;
+import club.fkslime.myblog.vo.ResultVO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
@@ -31,14 +32,18 @@ public class ArticleInfoController {
      * @return 是否添加成功
      */
     @PostMapping("/add")
-    public ResponseEntity<Boolean> insertArticle(@RequestParam String name,
-                                                 @RequestParam String content,
-                                                 @RequestParam String tag){
+    public ResultVO<Object> insertArticle(@RequestParam String name,
+                                          @RequestParam String content,
+                                          @RequestParam String tag){
         ArticleInfo articleInfo = new ArticleInfo();
         articleInfo.setArticleName(name);
         articleInfo.setArticleContent(content);
         articleInfo.setArticleTag(tag);
-        return ResponseEntity.ok(articleInfoService.save(articleInfo));
+        boolean save = articleInfoService.save(articleInfo);
+        if (save){
+            return ResultVOUtil.success(articleInfo);
+        }
+        return ResultVOUtil.error(404, "error");
     }
 
 
@@ -47,8 +52,9 @@ public class ArticleInfoController {
      * @return 所有文章
      */
     @RequestMapping("/view")
-    public ResponseEntity<List<ArticleInfo>> selectArticle(){
-        return ResponseEntity.ok(articleInfoService.list());
+    public ResultVO<Object> selectArticle(){
+        List<ArticleInfo> list = articleInfoService.list(null);
+        return ResultVOUtil.success(list);
     }
 
     /**
@@ -56,29 +62,25 @@ public class ArticleInfoController {
      * @param articleId 文章编号
      * @return 文章
      */
-    @RequestMapping("/viewArticle")
+    @GetMapping("/viewArticle")
     public ResponseEntity<ArticleInfo> selectArticleById(@RequestParam int articleId){
-        ArticleInfo article = articleInfoService.getById(articleId);
-        if (article == null){
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(article);
+        return ResponseEntity.ok(articleInfoService.getById(articleId));
     }
 
     /**
      * 修改文章
-     * @param id 文章标号
+     * @param articleId 文章标号
      * @param name 文章名称
      * @param content 文章内容
      * @param tag 文章标签
      * @return 修改的结果
      */
-    @RequestMapping("/change")
-    public ResponseEntity<Boolean> changeArticle(@RequestParam int id,
+    @PostMapping("/change")
+    public ResponseEntity<Boolean> changeArticle(@RequestParam int articleId,
                                                  @RequestParam String name,
                                                  @RequestParam String content,
                                                  @RequestParam String tag){
-        ArticleInfo article = articleInfoService.getById(id);
+        ArticleInfo article = articleInfoService.getById(articleId);
         if (article == null){
             return ResponseEntity.badRequest().build();
         }
@@ -90,16 +92,12 @@ public class ArticleInfoController {
 
     /**
      * 删除文章
-     * @param id 文章id
+     * @param articleId 文章id
      * @return 删除结果
      */
-    @RequestMapping("/del")
-    public ResponseEntity<Boolean> removeArticle(@RequestParam int id){
-        ArticleInfo article = articleInfoService.getById(id);
-        if (article == null){
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(articleInfoService.removeById(article.getArticleId()));
+    @PostMapping("/del")
+    public ResponseEntity<Boolean> removeArticle(@RequestParam int articleId){
+        return ResponseEntity.ok(articleInfoService.removeById(articleId));
     }
 }
 
