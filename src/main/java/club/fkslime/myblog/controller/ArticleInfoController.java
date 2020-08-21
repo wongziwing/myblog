@@ -41,9 +41,9 @@ public class ArticleInfoController {
         articleInfo.setArticleTag(tag);
         boolean save = articleInfoService.save(articleInfo);
         if (!save){
-            return ResultVOUtil.error(ResultEnum.PARAM_ERROR);
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
         }
-        return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA, articleInfo);
+        return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA);
     }
 
 
@@ -66,7 +66,7 @@ public class ArticleInfoController {
     public ResultVO<Object> selectArticleById(@RequestParam int articleId){
         ArticleInfo articleInfo = articleInfoService.getById(articleId);
         if (articleInfo == null){
-            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMsg());
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
         }
         return ResultVOUtil.success(articleInfo);
     }
@@ -86,7 +86,7 @@ public class ArticleInfoController {
                                           @RequestParam String tag){
         ArticleInfo article = articleInfoService.getById(articleId);
         if (article == null){
-            return ResultVOUtil.error(ResultEnum.PARAM_ERROR);
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
         }
         article.setArticleName(name);
         article.setArticleContent(content);
@@ -103,7 +103,7 @@ public class ArticleInfoController {
     public ResultVO<Object> removeArticle(@RequestParam int articleId){
         boolean result = articleInfoService.removeById(articleId);
         if (!result){
-            return ResultVOUtil.error(ResultEnum.PARAM_ERROR);
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
         }
         return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA);
     }

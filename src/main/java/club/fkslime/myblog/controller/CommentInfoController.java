@@ -5,6 +5,7 @@ import club.fkslime.myblog.entity.ArticleInfo;
 import club.fkslime.myblog.entity.CommentInfo;
 import club.fkslime.myblog.service.IArticleInfoService;
 import club.fkslime.myblog.service.ICommentInfoService;
+import club.fkslime.myblog.statusEnums.ResultEnum;
 import club.fkslime.myblog.util.ResultVOUtil;
 import club.fkslime.myblog.vo.ResultVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -39,18 +40,17 @@ public class CommentInfoController {
     @PostMapping("/add")
     public ResultVO<Object> addComment(@RequestParam int articleId,
                                        @RequestParam String comment){
-        String errStr = "comment add error";
         if (articleInfoService.getById(articleId) == null){
-            return ResultVOUtil.error(400, errStr);
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
         }
         CommentInfo commentInfo = new CommentInfo();
         commentInfo.setArticleId(articleId);
         commentInfo.setCommentContent(comment);
         boolean save = commentInfoService.save(commentInfo);
         if (!save){
-            return ResultVOUtil.error(400, errStr);
+            return ResultVOUtil.error(ResultEnum.ERROR_OPERA);
         }
-        return ResultVOUtil.success();
+        return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA);
     }
 
     /**
@@ -61,7 +61,7 @@ public class CommentInfoController {
     @GetMapping("/view")
     public ResultVO<Object> selectComment(@RequestParam int articleId){
         if (articleInfoService.getById(articleId) == null){
-            return ResultVOUtil.error(400, "comment view error");
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
         }
         QueryWrapper<CommentInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("article_id", articleId);
@@ -79,18 +79,17 @@ public class CommentInfoController {
     public ResultVO<Object> delComment(@RequestParam int articleId,
                                        @RequestParam int commentId){
         ArticleInfo articleInfo = articleInfoService.getById(articleId);
-        String errStr = "comment del error";
         if (articleInfo == null){
-            return ResultVOUtil.error(400, errStr);
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
         }
         QueryWrapper<CommentInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("article_id", articleId)
                 .eq("comment_id", commentId);
         boolean remove = commentInfoService.remove(queryWrapper);
         if (!remove){
-            return ResultVOUtil.error(400, errStr);
+            return ResultVOUtil.error(ResultEnum.ERROR_OPERA);
         }
-        return ResultVOUtil.success();
+        return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA);
     }
 
 }
