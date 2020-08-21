@@ -2,9 +2,9 @@ package club.fkslime.myblog.controller;
 
 import club.fkslime.myblog.entity.ArticleInfo;
 import club.fkslime.myblog.service.IArticleInfoService;
+import club.fkslime.myblog.statusEnums.ResultEnum;
 import club.fkslime.myblog.util.ResultVOUtil;
 import club.fkslime.myblog.vo.ResultVO;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
@@ -40,10 +40,10 @@ public class ArticleInfoController {
         articleInfo.setArticleContent(content);
         articleInfo.setArticleTag(tag);
         boolean save = articleInfoService.save(articleInfo);
-        if (save){
-            return ResultVOUtil.success(articleInfo);
+        if (!save){
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR);
         }
-        return ResultVOUtil.error(400, "add error");
+        return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA, articleInfo);
     }
 
 
@@ -66,7 +66,7 @@ public class ArticleInfoController {
     public ResultVO<Object> selectArticleById(@RequestParam int articleId){
         ArticleInfo articleInfo = articleInfoService.getById(articleId);
         if (articleInfo == null){
-            return ResultVOUtil.error(400, "view error");
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR.getCode(), ResultEnum.PARAM_ERROR.getMsg());
         }
         return ResultVOUtil.success(articleInfo);
     }
@@ -86,12 +86,12 @@ public class ArticleInfoController {
                                           @RequestParam String tag){
         ArticleInfo article = articleInfoService.getById(articleId);
         if (article == null){
-            return ResultVOUtil.error(400, "change error");
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR);
         }
         article.setArticleName(name);
         article.setArticleContent(content);
         article.setArticleTag(tag);
-        return ResultVOUtil.success(article);
+        return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA, article);
     }
 
     /**
@@ -102,10 +102,10 @@ public class ArticleInfoController {
     @PostMapping("/del")
     public ResultVO<Object> removeArticle(@RequestParam int articleId){
         boolean result = articleInfoService.removeById(articleId);
-        if (result){
-            return ResultVOUtil.success();
+        if (!result){
+            return ResultVOUtil.error(ResultEnum.PARAM_ERROR);
         }
-        return ResultVOUtil.error(400, "del error");
+        return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA);
     }
 }
 

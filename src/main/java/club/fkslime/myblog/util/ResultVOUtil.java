@@ -1,5 +1,7 @@
 package club.fkslime.myblog.util;
 
+import club.fkslime.myblog.statusEnums.CodeEnum;
+import club.fkslime.myblog.statusEnums.ResultEnum;
 import club.fkslime.myblog.vo.ResultVO;
 
 /**
@@ -13,9 +15,14 @@ public class ResultVOUtil {
      * @return ResultVO
      */
     public static ResultVO<Object> success(Object object){
+        return success(ResultEnum.SUCCESS, object);
+    }
+
+    public static ResultVO<Object> success(CodeEnum codeEnum,
+                                           Object object){
         ResultVO<Object> resultVO = new ResultVO<>();
-        resultVO.setCode(200);
-        resultVO.setMsg("success");
+        resultVO.setCode(codeEnum.getCode());
+        resultVO.setMsg(codeEnum.getMsg());
         resultVO.setData(object);
         return resultVO;
     }
@@ -38,6 +45,14 @@ public class ResultVOUtil {
         ResultVO<Object> resultVO = new ResultVO<>();
         resultVO.setCode(code);
         resultVO.setMsg(msg);
+        resultVO.setData(null);
+        return resultVO;
+    }
+
+    public static ResultVO<Object> error(CodeEnum codeEnum){
+        ResultVO<Object> resultVO = new ResultVO<>();
+        resultVO.setCode(codeEnum.getCode());
+        resultVO.setMsg(codeEnum.getMsg());
         resultVO.setData(null);
         return resultVO;
     }
