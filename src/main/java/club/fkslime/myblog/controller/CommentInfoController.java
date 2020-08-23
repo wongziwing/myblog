@@ -66,7 +66,7 @@ public class CommentInfoController {
         QueryWrapper<CommentInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("article_id", articleId);
         List<CommentInfo> list = commentInfoService.list(queryWrapper);
-        return ResultVOUtil.success(list);
+        return ResultVOUtil.success(ResultEnum.SUCCESS,list);
     }
 
     /**

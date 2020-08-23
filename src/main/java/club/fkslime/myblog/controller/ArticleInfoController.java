@@ -54,7 +54,10 @@ public class ArticleInfoController {
     @RequestMapping("/view")
     public ResultVO<Object> selectArticle(){
         List<ArticleInfo> list = articleInfoService.list(null);
-        return ResultVOUtil.success(list);
+        if (list.isEmpty()){
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
+        }
+        return ResultVOUtil.success(ResultEnum.SUCCESS,list);
     }
 
     /**
@@ -80,7 +83,7 @@ public class ArticleInfoController {
      * @return 修改的结果
      */
     @PostMapping("/change")
-    public ResultVO<Object> changeArticle(@RequestParam int articleId,
+    public ResultVO<Object> updateArticle(@RequestParam int articleId,
                                           @RequestParam String name,
                                           @RequestParam String content,
                                           @RequestParam String tag){
@@ -91,7 +94,11 @@ public class ArticleInfoController {
         article.setArticleName(name);
         article.setArticleContent(content);
         article.setArticleTag(tag);
-        return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA, article);
+        boolean result = articleInfoService.updateById(article);
+        if (!result){
+            return ResultVOUtil.error(ResultEnum.ERROR_OPERA);
+        }
+        return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA);
     }
 
     /**
