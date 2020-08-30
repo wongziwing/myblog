@@ -1,12 +1,18 @@
 package club.fkslime.myblog.controller;
 
 import club.fkslime.myblog.entity.ArticleInfo;
+import club.fkslime.myblog.form.ArticleForm;
 import club.fkslime.myblog.service.IArticleInfoService;
 import club.fkslime.myblog.statusEnums.ResultEnum;
 import club.fkslime.myblog.util.ResultVOUtil;
 import club.fkslime.myblog.vo.ResultVO;
+import com.sun.istack.internal.NotNull;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
+import javax.validation.Valid;
+import org.springframework.web.util.HtmlUtils;
 import java.util.List;
 
 /**
@@ -21,27 +27,36 @@ import java.util.List;
 @RequestMapping("/articleInfo")
 public class ArticleInfoController {
 
+//    @Resource
+//    private ArticleInfoMapper articleInfoMapper;
+
     @Resource
     private IArticleInfoService articleInfoService;
 
     /**
      * 添加文章
-     * @param name 文章名称
-     * @param content 文章内容
-     * @param tag 文章标签
+     * @param articleForm 接受表单
+     * @param bindingResult 参数检验结果
      * @return 是否添加成功
      */
     @PostMapping("/add")
-    public ResultVO<Object> insertArticle(@RequestParam String name,
-                                          @RequestParam String content,
-                                          @RequestParam String tag){
+    public ResultVO<Object> insertArticle(@Valid ArticleForm articleForm,
+                                          BindingResult bindingResult){
+        // 如果表单错误
+        if (bindingResult.hasErrors()){
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
+        }
         ArticleInfo articleInfo = new ArticleInfo();
-        articleInfo.setArticleName(name);
+
+        String content = HtmlUtils.htmlEscapeHex(articleForm.getContent());
+        articleInfo.setArticleName(articleForm.getTitle());
+        articleInfo.setArticleTag(articleForm.getTags());
         articleInfo.setArticleContent(content);
-        articleInfo.setArticleTag(tag);
+
+
         boolean save = articleInfoService.save(articleInfo);
         if (!save){
-            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
+            return ResultVOUtil.error(ResultEnum.ERROR_OPERA);
         }
         return ResultVOUtil.success(ResultEnum.SUCCESS_OPERA);
     }
@@ -65,13 +80,14 @@ public class ArticleInfoController {
      * @param articleId 文章编号
      * @return 文章
      */
-    @GetMapping("/viewArticle")
-    public ResultVO<Object> selectArticleById(@RequestParam int articleId){
-        ArticleInfo articleInfo = articleInfoService.getById(articleId);
-        if (articleInfo == null){
-            return ResultVOUtil.error(ResultEnum.ERROR_PARAM.getCode(), ResultEnum.ERROR_PARAM.getMsg());
+    @PostMapping("/viewArticle")
+    public ResultVO<Object> selectArticleById(@NotNull Integer articleId){
+         ArticleInfo articleInfos = articleInfoService.getById(articleId);
+        //List<ArticleInfo> articleInfos = articleInfoMapper.queryArticleInfoById(articleId);
+        if (articleInfos == null){
+            return ResultVOUtil.error(ResultEnum.ERROR_PARAM);
         }
-        return ResultVOUtil.success(articleInfo);
+        return ResultVOUtil.success(articleInfos);
     }
 
     /**
